@@ -3,7 +3,7 @@ import { PushController } from "../controllers/push-controller";
 import { Routes } from  "./routes-interface";
 
 
-export class PushRoute implements Routes {
+export class PushNotificationRoute implements Routes {
     public pushController: PushController = new PushController()
     
     routes(app) {

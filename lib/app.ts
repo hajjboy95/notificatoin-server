@@ -1,7 +1,7 @@
 import * as express from "express";
 import * as bodyParser from "body-parser";
 import { IndexRoute } from "./routes/index-routes";
-import { PushRoute } from "./routes/push-routes";
+import { PushNotificationRoute } from "./routes/push-notification-routes";
 
 import * as mongoose from "mongoose";
 import { Routes } from  "./routes/routes-interface";
@@ -16,7 +16,7 @@ class App {
         this.config();
         this.routes.push(
             new IndexRoute(),
-            new PushRoute()
+            new PushNotificationRoute()
         )
         this.routes.forEach(element => {
             element.routes(this.app)
