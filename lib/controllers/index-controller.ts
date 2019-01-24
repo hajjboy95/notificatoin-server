@@ -37,7 +37,7 @@ export class IndexController {
 
     public rootIndex(req: Request, res: Response) {
         res.json({
-            message: "Hello Habibty wife Amina"
+            message: "Amina 😘"
         });
     }
 }
