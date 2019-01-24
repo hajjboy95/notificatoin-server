@@ -9,5 +9,9 @@ export class PushNotificationRoute implements Routes {
     routes(app) {
         app.route('/notification')
         .get(this.pushController.getNotifications);
+
+        app.route('/notification/send')
+        .get(this.pushController.sendNotification);
+
     }
 }
