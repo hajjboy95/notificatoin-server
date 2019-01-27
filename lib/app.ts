@@ -1,5 +1,6 @@
 import * as express from "express";
 import * as bodyParser from "body-parser";
+
 import { IndexRoute } from "./routes/index-routes";
 import { PushNotificationRoute } from "./routes/push-notification-routes";
 
