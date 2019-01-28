@@ -20,7 +20,7 @@ export class PushNotificationRoute implements Routes {
 
 
         app.route('/notification')
-        .get( this.pushController.getNotifications);
+        .get(this.pushController.getNotifications);
 
         app.route('/notification/send')
         .get(this.pushController.sendNotification);
