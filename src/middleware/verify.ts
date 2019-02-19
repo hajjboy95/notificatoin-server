@@ -1,4 +1,3 @@
-// var jwt = require('jsonwebtoken') // used to create, sign, and verify tokens
 import * as jwt from 'jsonwebtoken'
 import { User } from './../models/user'
 import { Request, Response, NextFunction } from 'express'
@@ -37,8 +36,8 @@ export class Verify {
 
     static verifyAdmin = (req: DecodedRequest, res: Response, next: NextFunction) => {
         const request = req as any
-        if (!request.decoded._doc.admin) {
-            var err = new StatusError('Only An Admin can be seen here :D')
+        if (request.decoded.data.role === 0) { //change this to enum
+            const err = new StatusError('Only An Admin can be seen here :D')
             err.status = 401
             return next(err)
         } else {

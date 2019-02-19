@@ -12,7 +12,7 @@ import { UserRoute } from "./routes/user-routes"
 (<any>mongoose).Promise = require("bluebird")
 import StatusError from "./error/status-error"
 
-var authenticate = require('./middleware/authentication')
+const authenticate = require('./middleware/authentication')
 
 
 class App {

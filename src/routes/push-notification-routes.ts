@@ -20,6 +20,5 @@ export class PushNotificationRoute implements Routes {
         .get(Verify.verifyOrdinaryUser ,this.pushController.getNotifications)
 
         app.route('/notification/send')
-        .post(Verify.verifyOrdinaryUser, Verify.verifyAdmin, this.pushController.sendNotification)
-    }
+        .post(Verify.verifyOrdinaryUser, this.pushController.sendNotification)
 }
