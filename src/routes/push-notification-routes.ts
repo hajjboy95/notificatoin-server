@@ -1,9 +1,9 @@
 import { Request, Response, Application } from "express"
 import { PushNotificationController } from "../controllers/push-notification-controller"
-import { Routes } from  "./routes-interface"
+import { Routes } from "./routes-interface"
 import *  as apn from "apn"
 import { options } from "../configurations/options"
-import {Verify} from "../middleware/verify"
+import { Verify } from "../middleware/verify"
 
 export class PushNotificationRoute implements Routes {
 
@@ -17,8 +17,9 @@ export class PushNotificationRoute implements Routes {
 
     routes(app: Application) {
         app.route('/notification')
-        .get(Verify.verifyOrdinaryUser ,this.pushController.getNotifications)
+            .get(Verify.verifyOrdinaryUser, this.pushController.getNotifications)
 
         app.route('/notification/send')
-        .post(Verify.verifyOrdinaryUser, this.pushController.sendNotification)
+            .post(Verify.verifyOrdinaryUser, this.pushController.sendNotification)
+    }
 }
