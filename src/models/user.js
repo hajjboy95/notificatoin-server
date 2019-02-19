@@ -1,11 +1,11 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var passportLocalMongoose = require('passport-local-mongoose');
+var mongoose = require('mongoose')
+var Schema = mongoose.Schema
+var passportLocalMongoose = require('passport-local-mongoose')
 
 var validateEmail = function(email) {
-    var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
     return re.test(email)
-};
+}
 
 var User = new Schema({
     username: { type: String, unique: true },
@@ -29,11 +29,11 @@ var User = new Schema({
     OauthId: String,
     OauthToken: String,
     createdAt: { type: Date, required: true, default: Date.now }
-});
+})
 
 User.method.getName = function() {
-    return ( this.firstname + ' ' + this.lastname);
-};
+    return ( this.firstname + ' ' + this.lastname)
+}
 
-User.plugin(passportLocalMongoose);
-module.exports = mongoose.model('User', User);
+User.plugin(passportLocalMongoose)
+module.exports = mongoose.model('User', User)

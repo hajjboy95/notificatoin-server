@@ -1,4 +1,4 @@
-import {Request, Response } from 'express';
+import {Request, Response } from 'express'
 
 export class JsonResponseStructure  {
 
@@ -10,7 +10,7 @@ export class JsonResponseStructure  {
             messageDetail: messageDetail,
             success: success,
             total: total
-        };
+        }
     }
 }
 
@@ -21,9 +21,9 @@ class MessageDetail {
     type: string
 
     constructor(action: string, icon: string, title: string, type: string) {
-        this.action = action;
-        this.icon = icon;
-        this.title = title;
+        this.action = action
+        this.icon = icon
+        this.title = title
         this.type = type
     }
 }
@@ -32,12 +32,12 @@ class MessageDetail {
 export class IndexController {
 
     constructor() {
-        console.log("index controller inititialized");
+        console.log("index controller inititialized")
     }
 
     public rootIndex(req: Request, res: Response) {
         res.json({
             message: "Amina 😘"
-        });
+        })
     }
 }

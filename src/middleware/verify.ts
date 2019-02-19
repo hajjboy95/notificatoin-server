@@ -1,11 +1,11 @@
-// var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
+// var jwt = require('jsonwebtoken') // used to create, sign, and verify tokens
 import * as jwt from 'jsonwebtoken'
-import { User } from './../models/user';
+import { User } from './../models/user'
 import { Request, Response, NextFunction } from 'express'
 import StatusError from "../error/status-error"
 
 interface DecodedRequest extends Request {
-    decoded: string | object;
+    decoded: string | object
 }
 
 export class Verify {
@@ -38,11 +38,11 @@ export class Verify {
     static verifyAdmin = (req: DecodedRequest, res: Response, next: NextFunction) => {
         const request = req as any
         if (!request.decoded._doc.admin) {
-            var err = new StatusError('Only An Admin can be seen here :D');
+            var err = new StatusError('Only An Admin can be seen here :D')
             err.status = 401
-            return next(err);
+            return next(err)
         } else {
-            next();
+            next()
         }
 
     }

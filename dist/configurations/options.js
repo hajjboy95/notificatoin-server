@@ -1,5 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+"use strict"
+Object.defineProperty(exports, "__esModule", { value: true })
 exports.options = {
     token: {
         key: __dirname + "/../conf/AuthKey_MMQ93RJ7AR.p8",
@@ -7,5 +7,5 @@ exports.options = {
         teamId: "QUBN3MKV6G"
     },
     production: false
-};
+}
 //# sourceMappingURL=options.js.map
