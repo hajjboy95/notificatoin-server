@@ -2,13 +2,10 @@ import * as jwt from 'jsonwebtoken'
 import { User } from './../models/user'
 import { Request, Response, NextFunction } from 'express'
 import StatusError from "../error/status-error"
-
-interface DecodedRequest extends Request {
-    decoded: string | object
-}
+import {DecodedRequest, DecodedBody} from '../interfaces/decoded-request'
 
 export class Verify {
-    static getToken = (user: User) => {
+    static getToken = (user: any) => {
         return jwt.sign({ data: user }, "config.secretKey", {
             expiresIn: 604800 // 1 week for token to expire
         })
@@ -35,8 +32,8 @@ export class Verify {
     }
 
     static verifyAdmin = (req: DecodedRequest, res: Response, next: NextFunction) => {
-        const request = req as any
-        if (request.decoded.data.role === 0) { //change this to enum
+        const decodedBody = req.decoded as DecodedBody
+        if (decodedBody.data.role === 0) { //change this to enum
             const err = new StatusError('Only An Admin can be seen here :D')
             err.status = 401
             return next(err)

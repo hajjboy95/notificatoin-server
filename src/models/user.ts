@@ -2,14 +2,14 @@ var mongoose = require('mongoose')
 var Schema = mongoose.Schema
 var passportLocalMongoose = require('passport-local-mongoose')
 
-var validateEmail = function(email) {
+var validateEmail = function (email) {
     var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
     return re.test(email)
 }
 
-var User = new Schema({
+var UserSchema = new Schema({
     username: { type: String, unique: true },
-    password: {type: String},
+    password: { type: String },
     email: {
         type: String,
         required: true,
@@ -28,12 +28,13 @@ var User = new Schema({
     }],
     OauthId: String,
     OauthToken: String,
-    createdAt: { type: Date, required: true, default: Date.now }
-})
+    organisations: [String] //user can belong to many organisations
+}, { timestamps: true })
 
-User.method.getName = function() {
-    return ( this.firstname + ' ' + this.lastname)
+UserSchema.method.getName = function () {
+    return (this.firstname + ' ' + this.lastname)
 }
 
-User.plugin(passportLocalMongoose)
-module.exports = mongoose.model('User', User)
+UserSchema.plugin(passportLocalMongoose)
+
+export const User = mongoose.model('User', UserSchema)

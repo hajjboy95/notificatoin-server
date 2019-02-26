@@ -11,9 +11,8 @@ import * as passport from "passport"
 import { UserRoute } from "./routes/user-routes"
 (<any>mongoose).Promise = require("bluebird")
 import StatusError from "./error/status-error"
-
+import * as morgan from "morgan"
 const authenticate = require('./middleware/authentication')
-
 
 class App {
   public app: express.Application
@@ -22,10 +21,17 @@ class App {
 
   constructor() {
     this.app = express()
-    this.config()
+    this.configLogger()
+    this.configMiddleware()
     this.configRoutes([new IndexRoute(), new PushNotificationRoute(), new UserRoute()])
     this.configErrorHandlers()
     this.mongoSetup()
+  }
+
+  private configMiddleware(): void {
+    this.app.use(bodyParser.json())
+    this.app.use(bodyParser.urlencoded({ extended: false }))
+    this.app.use(passport.initialize())
   }
 
   private configRoutes(routes: Routes[]): void {
@@ -35,24 +41,22 @@ class App {
     })
   }
 
-  private config(): void {
-    this.app.use(bodyParser.json())
-    this.app.use(bodyParser.urlencoded({ extended: false }))
-    this.app.use(passport.initialize())
+  private configLogger() {
+    this.app.use(morgan('combined'))
   }
 
   private configErrorHandlers() {
 
-   // this catches 404 errors 
-    this.app.get('*',(req, res, next) => {
+    // this catches 404 errors 
+    this.app.get('*', (req, res, next) => {
       let err = new StatusError(`${req.ip} tried to reach ${req.originalUrl}`)
       err.status = 404
       next(err)
     })
-    
-    this.app.use((err, req, res, next) => {
-      if (err) { next(err)} else {
-        const err: any = new StatusError('Not Found')
+
+    this.app.use((err: StatusError, req, res, next) => {
+      if (err) { next(err) } else {
+        const err = new StatusError('Not Found')
         err.status = 404
         next(err)
       }
@@ -61,7 +65,7 @@ class App {
     // development error handler
     // will print stacktrace
     if (this.app.get('env') === 'development') {
-      this.app.use((err, req, res, next) => {
+      this.app.use((err: StatusError, req, res, next) => {
         res.status(err.status || 500)
         res.json({
           message: err.message,
