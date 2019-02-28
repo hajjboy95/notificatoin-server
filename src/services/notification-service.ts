@@ -26,7 +26,6 @@ export class NotificationService implements INotificationService {
     }
 
     async notificationSendSuccess(userId: string, notification: IUserNotificationEntry[]) {
-        console.log(`notifications being recieved ${JSON.stringify(notification, null, 4)}`);
         try {
             const userNotificationModel = await UserNotification.findOne({userId: userId})
 
@@ -40,7 +39,7 @@ export class NotificationService implements INotificationService {
                 await userNotificationModel.save()
             }
         } catch (error) {
-            console.log("caught error in notification service",error)
+            console.log("caught error in notification service", error)
         }
     }
 }

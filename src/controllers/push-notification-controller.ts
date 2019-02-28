@@ -28,19 +28,59 @@ export class PushNotificationController {
         //get user and do things
         const decodedBody = req.decoded as DecodedBody
         const user = decodedBody.data
+        const message = req.body.message;
 
         const deviceTokensiOS: string[] = user.deviceTokens.filter((device) => device.deviceOS === "iOS").map(d => d.deviceToken);
         const deviceTokensAndroid: string[] = user.deviceTokens.filter((device) => device.deviceOS === "android").map(d => d.deviceToken);
 
         const expiry = Math.floor(Date.now() / 1000) + 3600 // Expires 1 hour from now.
-        const message = req.query.message;
         const bundleId = "com.mangafruit.compendium"
 
         const note = this.buildNotification(expiry, 3, "ping.aiff", message, { 'messageFrom': 'John Appleseed' }, bundleId)
+
+        console.log(`this.sendNotification(bundleId, user._id, message, note, deviceTokensiOS)`)
+        console.log(`this.sendNotification(${bundleId}, ${user._id}, ${message}, ${note}, ${deviceTokensiOS})`) 
+
         this.sendNotification(bundleId, user._id, message, note, deviceTokensiOS)
         res.json({
             message: "Notification sent "
         })
+    }
+
+    public sendNotificationToOrganisation(req: DecodedRequest, res: Response, next: NextFunction) {
+        const organisations: string[] = req.body.organisations
+        const message = req.body.message
+        const bundleId = req.body.bundleId
+
+        User.find({ organisations: {$in: organisations} })
+            .then((res) => {
+                if (!res || res.length === 0) {
+                    let e = new StatusError(`No Users for given organisation/s ${organisations}`)
+                    e.status = 404
+                    throw e
+                }
+                return res
+            })
+            .then((users) => {
+                console.log(`\n\nusers = ${users}\n\n`)
+                const expiry = Math.floor(Date.now() / 1000) + 3600 // Expires 1 hour from now.
+                const note = this.buildNotification(expiry, 3, "ping.aiff", message, { 'string': 'John Appleseed' }, bundleId)
+                let numberOfNotificatationsSent = 0
+                for (const user of users) {
+                    numberOfNotificatationsSent += 1
+                    const useriOSTokens = user.deviceTokens.filter(dt => dt.deviceOS == 'iOS').map(dt => dt.deviceToken)            
+                    this.sendNotification(bundleId, user._id, message, note, useriOSTokens)
+                }
+                return `Sent ${numberOfNotificatationsSent} notification`
+            })
+            .then((r) => {
+                res.json({
+                    message: r
+                })
+            })
+            .catch((e) => {
+                return next(e)
+            })
     }
 
     private sendNotification(bundleId: string, userId: string, message: string, note, deviceTokens){
@@ -73,75 +113,38 @@ export class PushNotificationController {
         note.topic = bundleId
         return note
     }
-    public sendNotificationToOrganisation(req: DecodedRequest, res: Response, next: NextFunction) {
-        const organisations: string[] = req.body.organisations
-        const message = req.body.message
+    
+    // public async sendNotificationToOrganisationAsync(req: DecodedRequest, res: Response, next: NextFunction) {
+    //     const organisations: string[] = req.body.organisations
+    //     const message = req.body.message
+    //     let users: any[]
+    //     console.log(`organisations = ${organisations}`)
+    //     try {
+    //         users = await User.find({ organisations: organisations })
 
-        User.find({ organisations: organisations})
-            .then((res) => {
-                if (!res || res.length === 0) {
-                    let e = new StatusError(`No Users for given organisation/s ${organisations}`)
-                    e.status = 404
-                    throw e
-                }
-                return res
-            })
-            .then((users) => {
-                const expiry = Math.floor(Date.now() / 1000) + 3600 // Expires 1 hour from now.
-                const bundleId = req.body.bundleId
-                const note = this.buildNotification(expiry, 3, "ping.aiff", message, { 'string': 'John Appleseed' }, bundleId)
-                let numberOfNotificatationsSent = 0
-                for (const user of users) {
-                    numberOfNotificatationsSent += 1
-                    this.apnProvider.send(note, user.deviceTokens).then((res) => {
-                        console.log(`Sent ${numberOfNotificatationsSent} notification to device token ${user.deviceTokens}`)
-                    }).catch((e) => {
-                        throw e
-                    })
-                }
-                return `Sent ${numberOfNotificatationsSent} notification`
-            })
-            .then((r) => {
-                res.json({
-                    message: r
-                })
-            })
-            .catch((e) => {
-                return next(e)
-            })
-    }
-
-    public async sendNotificationToOrganisationAsync(req: DecodedRequest, res: Response, next: NextFunction) {
-        const organisations: string[] = req.body.organisations
-        const message = req.body.message
-        let users: any[]
-        console.log(`organisations = ${organisations}`)
-        try {
-            users = await User.find({ organisations: organisations })
-
-        } catch (e) {
-            return next(e)
-        }
+    //     } catch (e) {
+    //         return next(e)
+    //     }
 
 
-        const expiry = Math.floor(Date.now() / 1000) + 3600 // Expires 1 hour from now.
-        const bundleId = req.body.bundleId
+    //     const expiry = Math.floor(Date.now() / 1000) + 3600 // Expires 1 hour from now.
+    //     const bundleId = req.body.bundleId
 
-        const note = this.buildNotification(expiry, 3, "ping.aiff", message, { 'string': 'John Appleseed' }, bundleId)
-        for (const user of users) {
-            // const deviceTokensiOS: string[] = user.deviceTokens.filter((device) => device.deviceOS === "iOS" ).map(d => d.deviceToken);
-            try {
-                await this.apnProvider.send(note, user.deviceTokens)
-                console.log("Sent 1 notification")
-            } catch (e) {
-                return next(e)
-            }
-        }
-        // res.json({
-        //     message: "something going on"
-        // })
-        console.log("finished sending notifications")
-    }
+    //     const note = this.buildNotification(expiry, 3, "ping.aiff", message, { 'string': 'John Appleseed' }, bundleId)
+    //     for (const user of users) {
+    //         // const deviceTokensiOS: string[] = user.deviceTokens.filter((device) => device.deviceOS === "iOS" ).map(d => d.deviceToken);
+    //         try {
+    //             await this.apnProvider.send(note, user.deviceTokens)
+    //             console.log("Sent 1 notification")
+    //         } catch (e) {
+    //             return next(e)
+    //         }
+    //     }
+    //     // res.json({
+    //     //     message: "something going on"
+    //     // })
+    //     console.log("finished sending notifications")
+    // }
 
 
 }
