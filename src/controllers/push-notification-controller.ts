@@ -113,38 +113,4 @@ export class PushNotificationController {
         note.topic = bundleId
         return note
     }
-    
-    // public async sendNotificationToOrganisationAsync(req: DecodedRequest, res: Response, next: NextFunction) {
-    //     const organisations: string[] = req.body.organisations
-    //     const message = req.body.message
-    //     let users: any[]
-    //     console.log(`organisations = ${organisations}`)
-    //     try {
-    //         users = await User.find({ organisations: organisations })
-
-    //     } catch (e) {
-    //         return next(e)
-    //     }
-
-
-    //     const expiry = Math.floor(Date.now() / 1000) + 3600 // Expires 1 hour from now.
-    //     const bundleId = req.body.bundleId
-
-    //     const note = this.buildNotification(expiry, 3, "ping.aiff", message, { 'string': 'John Appleseed' }, bundleId)
-    //     for (const user of users) {
-    //         // const deviceTokensiOS: string[] = user.deviceTokens.filter((device) => device.deviceOS === "iOS" ).map(d => d.deviceToken);
-    //         try {
-    //             await this.apnProvider.send(note, user.deviceTokens)
-    //             console.log("Sent 1 notification")
-    //         } catch (e) {
-    //             return next(e)
-    //         }
-    //     }
-    //     // res.json({
-    //     //     message: "something going on"
-    //     // })
-    //     console.log("finished sending notifications")
-    // }
-
-
 }
