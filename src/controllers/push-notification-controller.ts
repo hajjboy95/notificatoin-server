@@ -5,6 +5,7 @@ import { NotificationEntry, IUserNotificationEntry } from "../models/user-notifi
 import { INotificationService } from '../services/notification-service'
 import { DecodedRequest, DecodedBody } from '../interfaces/decoded-request'
 import StatusError from '../error/status-error'
+import { NotificationCount } from '../models/notification-count'
 
 export class PushNotificationController {
 
@@ -19,13 +20,12 @@ export class PushNotificationController {
     }
 
     public getNotifications(req: Request, res: Response, next: NextFunction) {
-        res.json({
-            message: "get notificatoins"
-        })
+        let err = new StatusError("NO ROUTE HERE")
+        err.status = 404
+        next(err)
     }
 
     public sendNotificationToUser(req: DecodedRequest, res: Response, next: NextFunction) {
-        //get user and do things
         const decodedBody = req.decoded as DecodedBody
         const user = decodedBody.data
         const message = req.body.message;
@@ -83,7 +83,25 @@ export class PushNotificationController {
             })
     }
 
-    private sendNotification(bundleId: string, userId: string, message: string, note, deviceTokens){
+    private async sendNotification(bundleId: string, userId: string, message: string, note, deviceTokens){
+
+        try {
+            const allCounters = await NotificationCount.find({})
+
+            if (allCounters === undefined || allCounters.length == 0) {
+                const firstCounter = await NotificationCount.create({})
+                firstCounter.numberOfNoticationsSent = 1
+                await firstCounter.save()
+            } else {
+                const counter = allCounters[0]
+                const counts = counter.numberOfNoticationsSent
+                counter.numberOfNoticationsSent += 1
+                await counter.save()
+            }
+        } catch (err) {
+            console.log(`error ----- ${err}`)
+        }
+
         this.apnProvider.send(note, deviceTokens).then((result) => {
             const notificationEntries = this.createNotificationEntriesWith(bundleId, userId, message, result)
             if (result.failed.length > 0) {
