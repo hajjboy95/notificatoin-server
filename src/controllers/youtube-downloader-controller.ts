@@ -25,7 +25,8 @@ export class YoutubeDownloaderController {
         const vidPath = `${this.downloadsPath}${currentTime}-vid.mp4`
 
         ytdl(url, { filter: (format) => format.container === 'mp4' })
-        .pipe(fs.createWriteStream(vidPath)).on('finish', () => {
+        .pipe(fs.createWriteStream(vidPath))
+        .on('finish', () => {
             res.download(vidPath)
         }).on('error', (e) => {
             next(e)
