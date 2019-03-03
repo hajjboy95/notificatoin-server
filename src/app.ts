@@ -1,14 +1,15 @@
 import * as express from "express"
 import * as bodyParser from "body-parser"
 
+import { Routes } from "./routes/routes-interface"
 import { IndexRoute } from "./routes/index-routes"
 import { PushNotificationRoute } from "./routes/push-notification-routes"
+import { UserRoute } from "./routes/user-routes"
+import { YoutubeDownloaderRoute } from "./routes/youtube-downloader-routes"
 
 import * as mongoose from "mongoose"
 
-import { Routes } from "./routes/routes-interface"
 import * as passport from "passport"
-import { UserRoute } from "./routes/user-routes"
 (<any>mongoose).Promise = require("bluebird")
 import StatusError from "./error/status-error"
 import * as morgan from "morgan"
@@ -23,7 +24,7 @@ class App {
     this.app = express()
     this.configLogger()
     this.configMiddleware()
-    this.configRoutes([new IndexRoute(), new PushNotificationRoute(), new UserRoute()])
+    this.configRoutes([new IndexRoute(), new PushNotificationRoute(), new UserRoute(), new YoutubeDownloaderRoute()])
     this.configErrorHandlers()
     this.mongoSetup()
   }
