@@ -13,8 +13,8 @@ export class YoutubeDownloaderRoute implements Routes {
 
     routes(app: Application) {
 
-        app.route('/user')
-        .post(Verify.verifyOrdinaryUser, this.youtubeDownloaderController.downloadVideo)
+        app.route('/youtube')
+        .post(this.youtubeDownloaderController.downloadVideo)
 
     }
 
