@@ -12,11 +12,8 @@ export class YoutubeDownloaderRoute implements Routes {
     }
 
     routes(app: Application) {
-
         app.route('/youtube')
         .post(this.youtubeDownloaderController.downloadVideo)
         .get(this.youtubeDownloaderController.downloadVideoG)
-
     }
-
 }
