@@ -13,6 +13,7 @@ import * as passport from "passport"
 (<any>mongoose).Promise = require("bluebird")
 import StatusError from "./error/status-error"
 import * as morgan from "morgan"
+
 const authenticate = require('./middleware/authentication')
 
 class App {
@@ -22,6 +23,7 @@ class App {
 
   constructor() {
     this.app = express()
+    this.configEjs()
     this.configLogger()
     this.configMiddleware()
     this.configRoutes([new IndexRoute(), new PushNotificationRoute(), new UserRoute(), new YoutubeDownloaderRoute()])
@@ -40,6 +42,11 @@ class App {
     this.routes.forEach(element => {
       element.routes(this.app)
     })
+  }
+
+  private configEjs() {
+    this.app.set('views', './src/views');
+    this.app.set('view engine', 'ejs');
   }
 
   private configLogger() {

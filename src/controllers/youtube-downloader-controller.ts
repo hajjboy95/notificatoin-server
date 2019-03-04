@@ -16,8 +16,9 @@ export class YoutubeDownloaderController {
     }
 
     public downloadVideoG(req: Request, res: Response, next: NextFunction) {
-        const url = req.query.ytURL
-        this.download(url,req,res,next)
+        // const url = req.query.ytURL
+        // this.download(url,req,res,next)
+        res.render('index.ejs', {title: "😘 Amina 😘", user: "😘"})
     }
 
     private download(url: String, req: Request, res: Response, next: NextFunction) {
