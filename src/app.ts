@@ -47,6 +47,7 @@ class App {
   private configEjs() {
     this.app.set('views', './src/views');
     this.app.set('view engine', 'ejs');
+    this.app.use(express.static(__dirname + '/public'));
   }
 
   private configLogger() {

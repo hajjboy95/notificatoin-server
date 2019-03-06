@@ -7,18 +7,24 @@ export class YoutubeDownloaderController {
 
     constructor() {
         this.downloadVideo = this.downloadVideo.bind(this) //makes me bind this to proper this
-        this.downloadVideoG = this.downloadVideoG.bind(this) //makes me bind this to proper this
+        this.indexpage = this.indexpage.bind(this) //makes me bind this to proper this
     }
 
     public downloadVideo(req: Request, res: Response, next: NextFunction) {
+        console.log("HELLO downloadVideo" )
+        console.log(req.body)
         const url = req.body.ytURL
-        this.download(url,req,res,next)
+        const videoFormat = req.body.videoFormat
+        console.log(`url = ${url} \nvideoFormat = ${videoFormat}`)
+        res.render('index.ejs', {videoUrl: url, format: videoFormat })
+        // this.download(url,req,res,next)
     }
 
-    public downloadVideoG(req: Request, res: Response, next: NextFunction) {
+    public indexpage(req: Request, res: Response, next: NextFunction) {
+        console.log("HELLO")
         // const url = req.query.ytURL
         // this.download(url,req,res,next)
-        res.render('index.ejs', {title: "😘 Amina 😘", user: "😘"})
+        res.render('index.ejs', {videoUrl: null, format: null })
     }
 
     private download(url: String, req: Request, res: Response, next: NextFunction) {
