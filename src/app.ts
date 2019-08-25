@@ -12,7 +12,7 @@ import * as mongoose from "mongoose"
 import * as passport from "passport"
 (<any>mongoose).Promise = require("bluebird")
 import StatusError from "./error/status-error"
-import * as morgan from "morgan"
+import * as morgan from "morgan"g
 
 const authenticate = require('./middleware/authentication')
 
@@ -48,6 +48,7 @@ class App {
     this.app.set('views', './src/views');
     this.app.set('view engine', 'ejs');
     this.app.use(express.static(__dirname + '/public'));
+    this.app.use(express.static(__dirname + '/public/assets/v'));
   }
 
   private configLogger() {
