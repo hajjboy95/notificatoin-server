@@ -12,7 +12,7 @@ import * as mongoose from "mongoose"
 import * as passport from "passport"
 (<any>mongoose).Promise = require("bluebird")
 import StatusError from "./error/status-error"
-import * as morgan from "morgan"g
+import * as morgan from "morgan"
 
 const authenticate = require('./middleware/authentication')
 

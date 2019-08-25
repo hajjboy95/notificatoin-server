@@ -1,0 +1,1 @@
+{"version":3,"file":"notification-count.js","sourceRoot":"","sources":["../../src/models/notification-count.ts"],"names":[],"mappings":";;AAAA,uCAA0D;AAQ1D,MAAM,uBAAuB,GAAW,IAAI,iBAAM,CAAC;IAC/C,uBAAuB,EAAE,EAAE,IAAI,EAAE,MAAM,EAAE,OAAO,EAAE,CAAC,EAAE;CACxD,EAAE,EAAE,UAAU,EAAE,IAAI,EAAE,CAAC,CAAA;AAEX,QAAA,iBAAiB,GAAmC,gBAAK,CAA0B,kBAAkB,EAAE,uBAAuB,CAAC,CAAA"}
