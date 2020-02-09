@@ -42,7 +42,7 @@ export class NotificationEntry implements IUserNotificationEntry {
     }
 }
 export interface IUserNotificationModel extends IUserNotification, Document { }
-export interface IUserNotificationEntryModel extends IUserNotificationEntry, Document { }
+// export interface IUserNotificationEntryModel extends IUserNotificationEntry, Document { }
 
 let UserNotificationSchema: Schema = new Schema({
     userId: String,

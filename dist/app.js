@@ -11,12 +11,11 @@ const passport = require("passport");
 mongoose.Promise = require("bluebird");
 const status_error_1 = require("./error/status-error");
 const morgan = require("morgan");
-g;
 const authenticate = require('./middleware/authentication');
 class App {
     constructor() {
         this.routes = [];
-        this.mongoUrl = 'mongodb://localhost/notification-server';
+        this.mongoUrl = 'mongodb://localhost/e-commerce';
         this.app = express();
         this.configEjs();
         this.configLogger();

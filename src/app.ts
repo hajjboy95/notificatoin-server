@@ -3,9 +3,11 @@ import * as bodyParser from "body-parser"
 
 import { Routes } from "./routes/routes-interface"
 import { IndexRoute } from "./routes/index-routes"
-import { PushNotificationRoute } from "./routes/push-notification-routes"
+import { ListingRoute } from "./routes/listing-routes";
+
+// import { PushNotificationRoute } from "./routes/push-notification-routes"
+// import { YoutubeDownloaderRoute } from "./routes/youtube-downloader-routes"
 import { UserRoute } from "./routes/user-routes"
-import { YoutubeDownloaderRoute } from "./routes/youtube-downloader-routes"
 
 import * as mongoose from "mongoose"
 
@@ -26,7 +28,7 @@ class App {
     this.configEjs()
     this.configLogger()
     this.configMiddleware()
-    this.configRoutes([new IndexRoute(), new PushNotificationRoute(), new UserRoute(), new YoutubeDownloaderRoute()])
+    this.configRoutes([new IndexRoute(), new UserRoute(), new ListingRoute()])
     this.configErrorHandlers()
     this.mongoSetup()
   }

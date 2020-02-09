@@ -1,8 +1,9 @@
-import { Request, Response, NextFunction } from 'express'
+import {Request, Response, NextFunction} from 'express'
 import * as passport from 'passport'
-import {User} from '../models/user'
+import {Token, User} from '../models/user'
 import {Verify} from "../middleware/verify"
-import { DecodedRequest } from '../interfaces/decoded-request.js';
+import {DecodedRequest} from '../interfaces/decoded-request';
+const crypto = require('crypto');
 
 export class UserController {
 
@@ -10,8 +11,8 @@ export class UserController {
     }
 
     public async getUsers(req: Request, res: Response, next: NextFunction) {
-        const allUsers = await User.find({})
-        res.json ({
+        const allUsers = await User.find({});
+        res.json({
             users: allUsers
         })
     }
@@ -19,18 +20,24 @@ export class UserController {
     public async getCurrentUserDetails(req: DecodedRequest, res: Response, next: NextFunction) {
         const userId = req.decoded.data._id
         const currentUser = await User.find({_id: userId})
-        res.json ({
+        res.json({
             user: currentUser
         })
     }
 
 
     public loginUser(req: Request, res: Response, next: NextFunction) {
-        passport.authenticate('local', function(err, user, info) {
-            if (err) { return next(err) }
-            if (!user) { return next(info) }
-            req.logIn(user, function(err) {
-                if (err) {return next(new Error('Could not log in user')) }
+        passport.authenticate('local', function (err, user, info) {
+            if (err) {
+                return next(err)
+            }
+            if (!user) {
+                return next(info)
+            }
+            req.logIn(user, function (err) {
+                if (err) {
+                    return next(new Error('Could not log in user'))
+                }
                 let token = Verify.getToken(user)
                 return res.status(200).json({
                     token: token
@@ -40,9 +47,9 @@ export class UserController {
     }
 
     public async createUser(req: Request, res: Response, next: NextFunction) {
-        let body = req.body
+        let body = req.body;
 
-        var newUser = new User({
+        const newUser = new User({
             username: body.username,
             email: body.email,
             firstname: body.firstname,
@@ -51,20 +58,52 @@ export class UserController {
             isVerified: body.isVerified,
             passwordResetToken: body.passwordResetToken,
             passwordResetExpires: body.passwordResetExpires,
-            deviceTokens: body.deviceTokens,
-            organisations: body.organisations,
-        })
+        });
 
         try {
             const email = await User.findOne({email: newUser.email})
-            if (email) { return next(new Error("Email has already been registered")) }
-            const user = await User.register(newUser, req.body.password); 
-            if (!user) { return next(new Error("No User Defined"))}
-            await passport.authenticate('local')(req, res, next)
-            return res.status(200).json({ user })
-        }
-        catch (e) {
+            if (email) {
+                return next(new Error("Email has already been registered"))
+            }
+            const user = await User.register(newUser, req.body.password);
+            if (!user) {
+                return next(new Error("No User Defined"))
+            }
+
+            await user.save();
+            await passport.authenticate('local')(req, res, next);
+            const tokenInfo = {
+                _userId: user._id,
+                token: crypto.randomBytes(16).toString('hex')
+            };
+            const token = new Token(tokenInfo);
+            await token.save();
+            // should send an email with the verification link
+            return res.status(200).json(token)
+        } catch (e) {
             next(e)
         }
+    }
+
+    // convert to async typescript
+    public confirmToken(req: Request, res: Response, next: NextFunction) {
+        const tokenId = req.params.tokenId;
+        Token.findOne({token: tokenId}, function (err, token) {
+            if (err) return next(err);
+            if (!token) {
+                return res.json({err: "Invalid Token"});
+            }
+            User.findOne({_id: token._userId}, function (err, user) {
+                user.isVerified = true;
+                if (err) return next(err);
+                user.save(function (err) {
+                    if (err) return next(err);
+                    res.json({
+                        status: true,
+                        message: "User is now verified"
+                    });
+                });
+            });
+        });
     }
 }
