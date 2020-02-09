@@ -16,6 +16,9 @@ export class ListingController {
 
     public async createListing(req: DecodedRequest, res: Response, next: NextFunction) {
         const {title, price, imgUrl, images} = req.body;
+        if (!title || !price || !imgUrl || !images) {
+            return next(new ResponseBody(false, "Missing Parameters"));
+        }
         const listing = new Listing({
             title: title,
             price: price,
