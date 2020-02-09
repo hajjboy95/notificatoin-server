@@ -15,15 +15,21 @@ export class ListingController {
     }
 
     public async createListing(req: DecodedRequest, res: Response, next: NextFunction) {
-        const {title, price, imgUrl, images} = req.body;
-        if (!title || !price || !imgUrl || !images) {
+        const vendorId = req.decoded.data._id;
+        const {title, price, imgUrl, images, summary, description, location, rating} = req.body;
+        if (!title || !price || !imgUrl || !images || !summary || !description || !location || !rating) {
             return next(new ResponseBody(false, "Missing Parameters"));
         }
         const listing = new Listing({
             title: title,
             price: price,
             imgUrl: imgUrl,
-            images: images
+            images: images,
+            summary: summary,
+            description: description,
+            location: location,
+            rating: rating,
+            vendorId: vendorId
         });
         await listing.save();
         return res.json(new ResponseBody(true, "successfully created"));
