@@ -6,7 +6,7 @@ import {ResponseBody} from "../models/ResponseBody";
 export class ListingController {
 
     constructor() {
-        console.log("index controller inititialized")
+        console.log("Listing controller initialized")
     }
 
     public async rootIndex(req: Request, res: Response) {
@@ -27,5 +27,19 @@ export class ListingController {
         });
         await listing.save();
         return res.json(new ResponseBody(true, "successfully created"));
+    }
+
+    public async findById(req: Request, res: Response, next: NextFunction) {
+        const id = req.params.id;
+        if (!id) {
+            next(new ResponseBody(false, "Missing Id"));
+        }
+        try {
+            const listing = await Listing.findById(id);
+            res.json(new ResponseBody(true, listing));
+        } catch(e) {
+            next(new ResponseBody(false, e));
+        }
+
     }
 }

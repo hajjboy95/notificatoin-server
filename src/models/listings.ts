@@ -8,10 +8,12 @@ export interface IListing {
 }
 
 let ListingSchema = new Schema({
-    title: String,
-    price: String,
-    imgUrl: String,
+    title: {type: String, required: true},
+    price: {type: String, required: true},
+    imgUrl: {type: String, required: true},
     images: [{type: String}],
+    summary: {type: String, required: true, maxlength: 100},
+    description: {type: String, required: true, maxlength: 1000}
 }, {timestamps: true});
 
 export interface IListingModel extends IListing, Document {

@@ -10,6 +10,9 @@ export class ListingRoute implements Routes {
     public routes(app) {
         app.route('/listing')
             .get(this.listingController.rootIndex)
-            .post(Verify.verifyOrdinaryUser, this.listingController.createListing)
+            .post(Verify.verifyOrdinaryUser, this.listingController.createListing);
+        app.route('/listing/:id')
+            .get(this.listingController.findById)
+
     }
 }
